@@ -1,21 +1,19 @@
 import { useNavigate } from "react-router-dom";
 
-function Users({ users,onViewuser }) {
+function Users({ users }) {
+
   //   const fetchUsers = () => {
   //     axios.get("https://jsonplaceholder.typicode.com/todos").then((res) => {
-        console.log("usrs", users);
-        const navigate = useNavigate();
   //       setUsers(res.data);
   //     });
   //   };
   //   useEffect(() => {
   //     fetchUsers();
   //   }, []);
+
+  const navigate = useNavigate();
   const viewItem = (id)=>{
-    console.log("clicked view",id);
     navigate(`/user/${id}`);
-    onViewuser(id);
-    
   }
 
   return (
