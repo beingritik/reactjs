@@ -34,7 +34,7 @@ function App() {
   const viewsingleHandler = (id)=>{
     // console.log("clicked single",id);
     const singleValue = userData.filter((prev)=> prev.id===id);
-    setoneUser(singleValue[0]);
+    setoneUser(singleValue[0]); 
   }
 
   const router = createBrowserRouter(
