@@ -1,87 +1,89 @@
 import { useNavigate } from "react-router-dom";
-import Edit from "./Edit";
 import { useState, useEffect } from "react";
-function Users({ users, staticdata }) {
-  //   const fetchUsers = () => {
-  //     axios.get("https://jsonplaceholder.typicode.com/todos").then((res) => {
-  //       setUsers(res.data);
-  //     });
-  //   };
-  //   useEffect(() => {
-  //     fetchUsers();
-  //   }, []);
-
-  useEffect(() => {
-    setStaticUsers(staticdata)
-  }, [staticdata]);
-
-  const [staticUsers, setStaticUsers] = useState(staticdata);
-  // const [edit,setedit]= useState(null);
-  const [toEdit, settoEdit] = useState("");
-  const [isEditable, setisEditable] = useState(false);
+import axios from "axios";
+function Users({ users,sendId }) {
+  let url = import.meta.env.VITE_URL;
+  const [edit, setEdit] = useState(false);
+  const [title, setTitle] = useState("");
+  const [editid, seteditid] = useState();
   const navigate = useNavigate();
+
   const viewItem = (id) => {
+    sendId(id);
     navigate(`/user/${id}`);
   };
-  const editItem = (user) => {
-    setisEditable(true);
-    settoEdit(user);
+
+  const editItem = (id, titleValue) => {
+    setTitle(titleValue);
+    setEdit(true);
+    seteditid(id);
   };
 
-  const finaleditHandler = (data) => {
-    const newArray = staticdata.map((prev) =>
-    prev.id === data.id ? data : prev
-    );
-    setStaticUsers(newArray);
-    // settoEdit(null);
+  const saveItem = (editid, title) => {
+    let body = {id:editid,title:title};
+    url += `/${editid}`;
+    axios.patch(url, body).then((res) => {
+      //  return res.data;
+       const newVal = allUsers.map((prev)=> 
+       res.data.id === prev.id ? res.data:prev )
+       setallUsers(newVal);
+    })
+    .catch((err)=>{
+      console.log("err",err);
+      return err
+    })
+    setEdit(false);
   };
+  const [allUsers, setallUsers] = useState([]);
+
+  useEffect(() => {
+    setallUsers(users); 
+  }, [users]);
+
   return (
     <>
       <div>
-
-
-        {isEditable ? <Edit user={toEdit} sendData={finaleditHandler} /> : null}
-
-
-        the static are:
-        {staticUsers &&
-          staticUsers.map((staticUser) => (
-            <ol key={staticUser.id}>
-              <li>{staticUser.title} </li>
-              <li>{JSON.stringify(staticUser.completed)} </li>
-              <button onClick={() => editItem(staticUser)}> Edit </button>
-            </ol>
-          ))}
-
-
-
-        {/* The users are : */}
-        {/* <table>
+        The users are :
+        <table>
           <tr>
             <th> title</th>
             <th> userId</th>
             <th> Flag</th>
             <th>Actions </th>
           </tr>
-          {users &&
-            users.map((user) => (
+          {allUsers &&
+            allUsers.map((user) => (
               <tr key={user.id}>
-                <th>{user.title || "not available"}</th>
+                {edit && editid === user.id ? (
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                ) : (
+                  <p>{user.title}</p>
+                )}
                 <th>{user.userId || "not fetching .."}</th>
                 <th>{JSON.stringify(user.completed) || "not having"}</th>
                 <th>
                   <button onClick={() => viewItem(user.id)}> View </button>
                 </th>
                 <th>
-                  <button onClick={() => editItem(user)}> Edit </button>
+                  {edit ? (
+                    <button onClick={() => saveItem(editid, title)}>
+                      Save
+                    </button>
+                  ) : (
+                    <button onClick={() => editItem(user.id, user.title)}>
+                      edit
+                    </button>
+                  )}
                 </th>
               </tr>
             ))}
-        </table> */}
-        
+        </table>
       </div>
     </>
   );
 }
-
 export default Users;
