@@ -8,8 +8,10 @@ function useFetchdata(url) {
     .then((res)=> res.data)
     .then((data)=>{
       setuserData(data)
+      console.log(
+      );
     })
-  },[url]);
+  },[]);
   return userdata;
 }
 

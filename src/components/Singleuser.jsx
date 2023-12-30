@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-function Singleuser({users}) {
-  const [allusers,setall] = useState(users)
-  const id =useParams()
-  let singleValue = allusers.filter((user)=>user.id===parseInt(id.id) )
-  const po =  singleValue[0];
+function Singleuser({ users }) {
+  const [singleUser, setSingleUser] = useState(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const user = users.find((user) => user.id === parseInt(id));
+    if (user) {
+      setSingleUser(user);
+    } else {
+      // Handle user not found, you can redirect or show an error message
+      setSingleUser("no user found");
+      console.log("User not found");
+    }
+  }, [users]);
+
+  if (!singleUser) {
+    // You can render a loading state or an error message here
+    return <div>Fetching...</div>;
+  }
   return (
-    
     <div>
       <ol>
-        <li> ID    = {po.id || "Not present"}</li>
-        <li> Title  = {singleValue.title || " Title Not present"}</li>
-        <li> UserID ={singleValue.userId || "UserID Not present"}</li>
-        <li> Completed flag = {JSON.stringify(singleValue.completed ) || "Completed Not present"}</li> 
+        <li> ID = {singleUser.id || "Not present"}</li>
+        <li> Title = {singleUser.title || " Title Not present"}</li>
+        <li> UserID ={singleUser.userId || "UserID Not present"}</li>
+        <li>
+          {JSON.stringify(singleUser.completed) || "Completed Not present"}
+        </li>
       </ol>
     </div>
   );
@@ -21,13 +36,12 @@ function Singleuser({users}) {
 
 export default Singleuser;
 
+// // const [userinfo, setuserinfo] = useState([]);
+// let paramId = useParams();
 
-  // // const [userinfo, setuserinfo] = useState([]);
-  // let paramId = useParams();
+// // let url = import.meta.env.VITE_URL;
+// // url +="/"
+// // url+= paramId.id;
 
-  // // let url = import.meta.env.VITE_URL;
-  // // url +="/"
-  // // url+= paramId.id;
-
-  // // const singleData = useFetchdata(url);
-  // console.log("singleData==",singleData);
+// // const singleData = useFetchdata(url);
+// console.log("singleData==",singleData);

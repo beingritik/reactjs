@@ -1,17 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-function Users({ users,sendId }) {
+function Users({ users, sendId }) {
+  const [allUsers, setallUsers] = useState(users);
   let url = import.meta.env.VITE_URL;
   const [edit, setEdit] = useState(false);
   const [title, setTitle] = useState("");
   const [editid, seteditid] = useState();
-  const navigate = useNavigate();
-
-  const viewItem = (id) => {
-    sendId(id);
-    navigate(`/user/${id}`);
-  };
 
   const editItem = (id, titleValue) => {
     setTitle(titleValue);
@@ -20,24 +16,26 @@ function Users({ users,sendId }) {
   };
 
   const saveItem = (editid, title) => {
-    let body = {id:editid,title:title};
+    let body = { id: editid, title: title };
     url += `/${editid}`;
-    axios.patch(url, body).then((res) => {
-      //  return res.data;
-       const newVal = allUsers.map((prev)=> 
-       res.data.id === prev.id ? res.data:prev )
-       setallUsers(newVal);
-    })
-    .catch((err)=>{
-      console.log("err",err);
-      return err
-    })
+    axios
+      .patch(url, body)
+      .then((res) => {
+        //  return res.data;
+        const newVal = allUsers.map((prev) =>
+          res.data.id === prev.id ? res.data : prev
+        );
+        setallUsers(newVal);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        return err;
+      });
     setEdit(false);
   };
-  const [allUsers, setallUsers] = useState([]);
 
   useEffect(() => {
-    setallUsers(users); 
+    setallUsers(users);
   }, [users]);
 
   return (
@@ -66,7 +64,9 @@ function Users({ users,sendId }) {
                 <th>{user.userId || "not fetching .."}</th>
                 <th>{JSON.stringify(user.completed) || "not having"}</th>
                 <th>
-                  <button onClick={() => viewItem(user.id)}> View </button>
+                  <Link to={`/user/${user.id}`}>
+                    <button> View </button>
+                  </Link>
                 </th>
                 <th>
                   {edit ? (
