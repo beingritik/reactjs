@@ -1,31 +1,47 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 
-function Singleuser() {
-  const [userinfo, setuserinfo] = useState([]);
+function Singleuser({ users }) {
+  const [singleUser, setSingleUser] = useState(null);
+  const { id } = useParams();
 
-  let paramId = useParams();
-  console.log("paramid",paramId)
   useEffect(() => {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/todos/${paramId.sendId}`)
-      .then((response) => {
-        console.log("singledata", response.data);
-        setuserinfo(response.data);
-      });
-  }, [paramId]);
+    const user = users.find((user) => user.id === parseInt(id));
+    if (user) {
+      setSingleUser(user);
+    } else {
+      // Handle user not found, you can redirect or show an error message
+      setSingleUser("no user found");
+      console.log("User not found");
+    }
+  }, [users]);
 
+  if (!singleUser) {
+    // You can render a loading state or an error message here
+    return <div>Fetching...</div>;
+  }
   return (
     <div>
       <ol>
-        <li>ID = {userinfo.id}</li>
-        <li>Title = {userinfo.title}</li>
-        <li>UserIDv={userinfo.userId}</li>
-        <li>Completed flag = {JSON.stringify(userinfo.completed)}</li>
+        <li> ID = {singleUser.id || "Not present"}</li>
+        <li> Title = {singleUser.title || " Title Not present"}</li>
+        <li> UserID ={singleUser.userId || "UserID Not present"}</li>
+        <li>
+          {JSON.stringify(singleUser.completed) || "Completed Not present"}
+        </li>
       </ol>
     </div>
   );
 }
 
 export default Singleuser;
+
+// // const [userinfo, setuserinfo] = useState([]);
+// let paramId = useParams();
+
+// // let url = import.meta.env.VITE_URL;
+// // url +="/"
+// // url+= paramId.id;
+
+// // const singleData = useFetchdata(url);
+// console.log("singleData==",singleData);
