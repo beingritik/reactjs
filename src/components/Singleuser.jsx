@@ -6,7 +6,7 @@ function Singleuser({ users }) {
   const { id } = useParams();
 
   useEffect(() => {
-    const user = users.find((user) => user.id === parseInt(id));
+    const user = users.find((user) => user.id === Number(id));
     if (user) {
       setSingleUser(user);
     } else {
